@@ -48,6 +48,8 @@ func New(streams genericiooptions.IOStreams) *cobra.Command {
 		}
 	}
 
+	root.AddCommand(newWorkspace(configFlags, &workspace, streams))
+
 	kubectlPreRunE := root.PersistentPreRunE
 	root.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		if workspace != "" {

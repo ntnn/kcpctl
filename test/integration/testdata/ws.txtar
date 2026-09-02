@@ -1,0 +1,18 @@
+# current workspace comes from the kubeconfig
+exec kcpctl ws current
+stdout 'root'
+
+# navigation mutates the kubeconfig
+exec kcpctl create workspace ws-nav
+exec kcpctl ws ws-nav
+stdout 'Current workspace is .root:ws-nav'
+grep 'clusters/root:ws-nav' $KUBECONFIG
+
+# relative navigation back to the parent
+exec kcpctl ws ..
+stdout 'Current workspace is .root'
+
+# -W applies to the ws subtree without touching the kubeconfig
+exec kcpctl -W :root:ws-nav ws current
+stdout 'root:ws-nav'
+grep 'clusters/root$' $KUBECONFIG
