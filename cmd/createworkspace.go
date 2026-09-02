@@ -19,8 +19,7 @@ func newCreateWorkspace(configFlags *genericclioptions.ConfigFlags, workspace *s
 		Args:         cobra.ExactArgs(1),
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			kcpopts.ClientConfig = configFlags.ToRawKubeConfigLoader()
-			kcpopts.Workspace = *workspace
+			prepareBase(kcpopts.Options, configFlags, workspace)
 			if err := kcpopts.Validate(); err != nil {
 				return err
 			}

@@ -15,8 +15,7 @@ import (
 // Only adding root, use, current and tree because I'm lazy.
 func newWorkspace(configFlags *genericclioptions.ConfigFlags, workspace *string, streams genericiooptions.IOStreams) *cobra.Command {
 	prepare := func(o *kcpbase.Options) {
-		o.ClientConfig = configFlags.ToRawKubeConfigLoader()
-		o.Workspace = *workspace
+		prepareBase(o, configFlags, workspace)
 	}
 	optOut := func(o *kcpbase.Options) {
 		o.OptOutOfDefaultKubectlFlags = true
