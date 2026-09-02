@@ -45,6 +45,7 @@ func New(streams genericiooptions.IOStreams) *cobra.Command {
 		switch c.Name() {
 		case "create":
 			c.AddCommand(newCreateWorkspace(configFlags, &workspace, streams))
+			c.AddCommand(newCreateAPIResourceSchema(configFlags, streams))
 		}
 	}
 
