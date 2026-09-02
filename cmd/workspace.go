@@ -15,13 +15,17 @@ import (
 // Only adding root, use, current and tree because I'm lazy.
 func newWorkspace(configFlags *genericclioptions.ConfigFlags, workspace *string, streams genericiooptions.IOStreams) *cobra.Command {
 	prepare := func(o *kcpbase.Options) {
-		o.OptOutOfDefaultKubectlFlags = true
 		o.ClientConfig = configFlags.ToRawKubeConfigLoader()
 		o.Workspace = *workspace
 	}
+	optOut := func(o *kcpbase.Options) {
+		o.OptOutOfDefaultKubectlFlags = true
+	}
 
 	useOpts := kcpplugin.NewUseWorkspaceOptions(streams)
+	optOut(useOpts.Options)
 	interactiveTreeOpts := kcpplugin.NewTreeOptions(streams)
+	optOut(interactiveTreeOpts.Options)
 	var interactive bool
 
 	root := &cobra.Command{
@@ -62,6 +66,7 @@ func newWorkspace(configFlags *genericclioptions.ConfigFlags, workspace *string,
 	useOpts.BindFlags(root)
 
 	useCmdOpts := kcpplugin.NewUseWorkspaceOptions(streams)
+	optOut(useCmdOpts.Options)
 	useCmd := &cobra.Command{
 		Aliases:      []string{"cd"},
 		Use:          "use <workspace>|..|.|-|~|<:root:absolute:workspace>|<relative:workspace>",
@@ -85,6 +90,7 @@ func newWorkspace(configFlags *genericclioptions.ConfigFlags, workspace *string,
 	root.AddCommand(useCmd)
 
 	currentOpts := kcpplugin.NewCurrentWorkspaceOptions(streams)
+	optOut(currentOpts.Options)
 	currentCmd := &cobra.Command{
 		Use:          "current [--short]",
 		Short:        "Print the current workspace. Same as 'kcpctl ws .'.",
@@ -107,6 +113,7 @@ func newWorkspace(configFlags *genericclioptions.ConfigFlags, workspace *string,
 	root.AddCommand(currentCmd)
 
 	treeOpts := kcpplugin.NewTreeOptions(streams)
+	optOut(treeOpts.Options)
 	treeCmd := &cobra.Command{
 		Use:          "tree",
 		Short:        "Print the current workspace tree.",
