@@ -41,6 +41,13 @@ func New(streams genericiooptions.IOStreams) *cobra.Command {
 	var workspace string
 	root.PersistentFlags().StringVarP(&workspace, "workspace", "W", "", "Workspace path to target.")
 
+	for _, c := range root.Commands() {
+		switch c.Name() {
+		case "create":
+			c.AddCommand(newCreateWorkspace(configFlags, &workspace, streams))
+		}
+	}
+
 	kubectlPreRunE := root.PersistentPreRunE
 	root.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		if workspace != "" {

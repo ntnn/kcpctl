@@ -1,0 +1,24 @@
+# create waits for readiness
+exec kcpctl create workspace cw-test
+stdout 'Workspace "cw-test" .* is ready to use'
+
+# visible in the parent workspace
+exec kcpctl get workspaces
+stdout cw-test
+
+# recreating fails without --ignore-existing
+! exec kcpctl create workspace cw-test
+stderr 'already exists'
+
+# --ignore-existing succeeds
+exec kcpctl create workspace cw-test --ignore-existing
+stdout 'already exists'
+
+# -W scopes creation to a subworkspace
+exec kcpctl -W :root:cw-test create workspace nested
+exec kcpctl -W :root:cw-test get workspaces
+stdout nested
+
+# --enter persists the created workspace into the kubeconfig
+exec kcpctl create workspace cw-enter --enter
+grep 'clusters/root:cw-enter' $KUBECONFIG
