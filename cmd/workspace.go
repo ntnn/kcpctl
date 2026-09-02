@@ -28,10 +28,11 @@ func newWorkspace(configFlags *genericclioptions.ConfigFlags, workspace *string,
 	var interactive bool
 
 	root := &cobra.Command{
-		Aliases:      []string{"ws", "workspaces"},
-		Use:          "workspace [use|current|tree|<workspace>|..|.|-|~|<root:absolute:workspace>] [-i|--interactive]",
-		Short:        "Manages kcp workspaces",
-		SilenceUsage: true,
+		ValidArgsFunction: completeWorkspacePath(configFlags),
+		Aliases:           []string{"ws", "workspaces"},
+		Use:               "workspace [use|current|tree|<workspace>|..|.|-|~|<root:absolute:workspace>] [-i|--interactive]",
+		Short:             "Manages kcp workspaces",
+		SilenceUsage:      true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if interactive {
 				if len(args) != 0 {
@@ -67,10 +68,11 @@ func newWorkspace(configFlags *genericclioptions.ConfigFlags, workspace *string,
 	useCmdOpts := kcpplugin.NewUseWorkspaceOptions(streams)
 	optOut(useCmdOpts.Options)
 	useCmd := &cobra.Command{
-		Aliases:      []string{"cd"},
-		Use:          "use <workspace>|..|.|-|~|<:root:absolute:workspace>|<relative:workspace>",
-		Short:        "Uses the given workspace as the current workspace. Using - means previous workspace, .. means parent workspace, . means current, ~ means home workspace",
-		SilenceUsage: true,
+		ValidArgsFunction: completeWorkspacePath(configFlags),
+		Aliases:           []string{"cd"},
+		Use:               "use <workspace>|..|.|-|~|<:root:absolute:workspace>|<relative:workspace>",
+		Short:             "Uses the given workspace as the current workspace. Using - means previous workspace, .. means parent workspace, . means current, ~ means home workspace",
+		SilenceUsage:      true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) != 1 {
 				return cmd.Help()

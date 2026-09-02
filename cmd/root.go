@@ -40,6 +40,7 @@ func New(streams genericiooptions.IOStreams) *cobra.Command {
 	// -W isntead -w as that is taken by kubectl get --watch
 	var workspace string
 	root.PersistentFlags().StringVarP(&workspace, "workspace", "W", "", "Workspace path to target.")
+	_ = root.RegisterFlagCompletionFunc("workspace", completeWorkspacePath(configFlags))
 
 	for _, c := range root.Commands() {
 		switch c.Name() {
@@ -55,6 +56,10 @@ func New(streams genericiooptions.IOStreams) *cobra.Command {
 
 	kubectlPreRunE := root.PersistentPreRunE
 	root.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
+		// shell completion must not trip over half-typed flag values
+		if cmd.Name() == cobra.ShellCompRequestCmd || cmd.Name() == cobra.ShellCompNoDescRequestCmd {
+			return kubectlPreRunE(cmd, args)
+		}
 		if workspace != "" {
 			if configFlags.APIServer != nil && *configFlags.APIServer != "" {
 				return errors.New("--workspace cannot be combined with --server")

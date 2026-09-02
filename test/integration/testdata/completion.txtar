@@ -1,0 +1,24 @@
+# workspaces to complete against
+exec kcpctl create workspace comp-a
+exec kcpctl create workspace comp-b
+
+# absolute path completion lists children of the typed parent
+exec kcpctl __complete --workspace :root:comp
+stdout ':root:comp-a'
+stdout ':root:comp-b'
+
+# top of the tree offers :root
+exec kcpctl __complete --workspace :ro
+stdout ':root'
+
+# relative completion lists children of the current workspace
+exec kcpctl __complete --workspace ''
+stdout 'comp-a'
+
+# ws argument completion
+exec kcpctl __complete ws :root:comp
+stdout ':root:comp-a'
+
+# zsh completion script generation
+exec kcpctl completion zsh
+stdout '#compdef kcpctl'
