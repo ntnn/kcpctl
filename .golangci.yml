@@ -1,0 +1,20 @@
+version: "2"
+
+linters:
+  enable:
+    - importas
+  settings:
+    importas:
+      # kcp packages are (almost) always imported under a kcp-prefixed alias
+      no-unaliased: true
+      alias:
+        - pkg: github.com/kcp-dev/cli/pkg/base
+          alias: kcpbase
+        - pkg: github.com/kcp-dev/cli/pkg/([\w]+)/plugin
+          alias: kcpplugin
+        - pkg: github.com/kcp-dev/sdk/apis/([\w]+)/(v[\w\d]+)
+          alias: kcp${1}${2}
+        - pkg: github.com/kcp-dev/sdk/client/clientset/versioned
+          alias: kcpclientset
+        - pkg: github.com/ntnn/kcp-testcontainer
+          alias: kcptc
