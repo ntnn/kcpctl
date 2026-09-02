@@ -1,0 +1,52 @@
+# create target workspace and wait until it serves
+exec kcpctl create -f workspace.yaml
+exec kcpctl wait --for=jsonpath={.status.phase}=Ready workspace/ws-flag
+
+# absolute --workspace scopes the request to the new workspace
+exec kcpctl --workspace :root:ws-flag create namespace ws-scoped
+exec kcpctl -W :root:ws-flag get namespaces
+stdout ws-scoped
+
+# request scoping did not leak into the root workspace
+! exec kcpctl get namespace ws-scoped
+stderr 'NotFound'
+
+# relative path resolves against the current workspace (root)
+exec kcpctl -W ws-flag get namespaces
+stdout ws-scoped
+
+# --workspace never persists into the kubeconfig
+exec kcpctl -W :root:ws-flag get namespaces
+grep 'clusters/root$' $KUBECONFIG
+
+# conflicts with --server
+! exec kcpctl -W :root get namespaces --server https://example.com:6443
+stderr '--workspace cannot be combined with --server'
+
+# relative path fails against a non-path server URL
+! exec kcpctl -W .. get namespaces --kubeconfig no-clusters.kubeconfig
+stderr 'requires the current server URL to contain a workspace path'
+
+-- workspace.yaml --
+apiVersion: tenancy.kcp.io/v1alpha1
+kind: Workspace
+metadata:
+  name: ws-flag
+
+-- no-clusters.kubeconfig --
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    server: https://example.com:6443
+  name: plain
+contexts:
+- context:
+    cluster: plain
+    user: plain
+  name: plain
+current-context: plain
+users:
+- name: plain
+  user:
+    token: dummy
