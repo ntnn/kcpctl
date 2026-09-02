@@ -1,0 +1,13 @@
+# create a workspace through the embedded kubectl create
+exec kcpctl create -f workspace.yaml
+stdout 'workspace.tenancy.kcp.io/smoke created'
+
+# list workspaces sees it
+exec kcpctl get workspaces
+stdout smoke
+
+-- workspace.yaml --
+apiVersion: tenancy.kcp.io/v1alpha1
+kind: Workspace
+metadata:
+  name: smoke

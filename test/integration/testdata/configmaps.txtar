@@ -1,0 +1,17 @@
+exec kcpctl create namespace cm-test
+
+# create
+exec kcpctl -n cm-test create configmap smoke --from-literal=foo=bar
+stdout 'configmap/smoke created'
+
+# get
+exec kcpctl -n cm-test get configmap smoke -o jsonpath={.data.foo}
+stdout '^bar$'
+
+# delete
+exec kcpctl -n cm-test delete configmap smoke
+stdout 'configmap "smoke" deleted'
+
+# gone after delete
+! exec kcpctl -n cm-test get configmap smoke
+stderr 'NotFound'
