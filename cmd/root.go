@@ -50,6 +50,8 @@ func New(streams genericiooptions.IOStreams) *cobra.Command {
 	}
 
 	root.AddCommand(newWorkspace(configFlags, &workspace, streams))
+	root.AddCommand(newBind(configFlags, &workspace, streams))
+	root.AddCommand(newClaims(configFlags, &workspace, streams))
 
 	kubectlPreRunE := root.PersistentPreRunE
 	root.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
