@@ -47,12 +47,15 @@ func New(streams genericiooptions.IOStreams) *cobra.Command {
 		case "create":
 			c.AddCommand(newCreateWorkspace(configFlags, &workspace, streams))
 			c.AddCommand(newCreateAPIResourceSchema(configFlags, streams))
+		case "get":
+			wireGetClaims(c, configFlags, &workspace, streams)
 		}
 	}
 
 	root.AddCommand(newWorkspace(configFlags, &workspace, streams))
 	root.AddCommand(newBind(configFlags, &workspace, streams))
-	root.AddCommand(newClaims(configFlags, &workspace, streams))
+	root.AddCommand(newAccept(configFlags, &workspace, streams))
+	root.AddCommand(newReject(configFlags, &workspace, streams))
 
 	kubectlPreRunE := root.PersistentPreRunE
 	root.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
