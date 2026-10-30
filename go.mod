@@ -3,9 +3,9 @@ module github.com/ntnn/kcpctl
 go 1.26.5
 
 require (
-	github.com/kcp-dev/cli v0.33.3
+	github.com/kcp-dev/cli v0.33.4
 	github.com/kcp-dev/logicalcluster/v3 v3.0.5
-	github.com/kcp-dev/sdk v0.33.3
+	github.com/kcp-dev/sdk v0.33.4
 	github.com/ntnn/kcp-testcontainer v0.3.0
 	github.com/rogpeppe/go-internal v1.16.0
 	github.com/spf13/cobra v1.10.2
@@ -82,7 +82,7 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jonboulle/clockwork v0.5.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/kcp-dev/apimachinery/v2 v2.33.3 // indirect
+	github.com/kcp-dev/apimachinery/v2 v2.33.4 // indirect
 	github.com/klauspost/compress v1.19.0 // indirect
 	github.com/liggitt/tabwriter v0.0.0-20181228230101-89fcab3d43de // indirect
 	github.com/lithammer/dedent v1.1.0 // indirect
